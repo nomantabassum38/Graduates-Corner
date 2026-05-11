@@ -36,41 +36,35 @@ export function TrustedMarquee() {
         Trusted by 120+ Universities & Companies Worldwide
       </p>
 
-      <div className="flex w-full overflow-hidden">
-        <motion.div
-          className="flex min-w-full shrink-0 items-center justify-around gap-12 px-6"
-          animate={{ x: ["0%", "-100%"] }}
-          transition={{
-            ease: "linear",
-            duration: 30,
-            repeat: Infinity,
-          }}
-        >
-          {/* First set of brands */}
+      <div className="group pause-on-hover flex w-full overflow-hidden">
+        {/* First Marquee Track */}
+        <div className="animate-marquee flex min-w-max shrink-0 items-center gap-16 pr-16">
           {brands.map((brand, i) => (
             <div
               key={i}
-              className="group flex items-center gap-3 opacity-40 transition-all duration-300 hover:opacity-100 grayscale hover:grayscale-0"
+              className="flex cursor-pointer items-center gap-3 opacity-40 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 hover:drop-shadow-[0_0_15px_rgba(var(--primary),0.5)]"
             >
-              <brand.icon className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
-              <span className="text-lg font-bold text-muted-foreground group-hover:text-foreground transition-colors">
+              <brand.icon className="h-8 w-8 text-muted-foreground transition-colors group-hover:text-primary" />
+              <span className="text-lg font-bold text-muted-foreground transition-colors group-hover:text-foreground">
                 {brand.name}
               </span>
             </div>
           ))}
-          {/* Duplicate set for seamless looping */}
+        </div>
+        {/* Duplicate Marquee Track for Seamless Loop */}
+        <div className="animate-marquee flex min-w-max shrink-0 items-center gap-16 pr-16" aria-hidden="true">
           {brands.map((brand, i) => (
             <div
               key={`dup-${i}`}
-              className="group flex items-center gap-3 opacity-40 transition-all duration-300 hover:opacity-100 grayscale hover:grayscale-0"
+              className="flex cursor-pointer items-center gap-3 opacity-40 grayscale transition-all duration-300 hover:scale-110 hover:opacity-100 hover:grayscale-0 hover:drop-shadow-[0_0_15px_rgba(var(--primary),0.5)]"
             >
-              <brand.icon className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
-              <span className="text-lg font-bold text-muted-foreground group-hover:text-foreground transition-colors">
+              <brand.icon className="h-8 w-8 text-muted-foreground transition-colors group-hover:text-primary" />
+              <span className="text-lg font-bold text-muted-foreground transition-colors group-hover:text-foreground">
                 {brand.name}
               </span>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   )
