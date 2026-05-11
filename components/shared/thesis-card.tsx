@@ -23,8 +23,11 @@ export function ThesisCard({ thesis }: { thesis: Thesis }) {
   const visibleSubjects = showAllSubjects ? subjects : subjects.slice(0, MAX_VISIBLE_SUBJECTS)
   const hiddenSubjectCount = subjects.length - MAX_VISIBLE_SUBJECTS
 
+  // Generate a deterministic Match Score for demo
+  const matchScore = 75 + (thesis.id.charCodeAt(0) % 24)
+
   return (
-    <Card className={`group relative flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${isPhD ? "ring-1 ring-accent/15" : ""
+    <Card className={`group relative flex flex-col hover-lift ${isPhD ? "ring-1 ring-accent/15" : ""
       }`}>
       {user?.type === "student" && (
         <button
@@ -50,6 +53,12 @@ export function ThesisCard({ thesis }: { thesis: Thesis }) {
               <BookOpen className="h-3 w-3" />
               {isPhD ? "PhD Position" : "Master's Thesis"}
             </span>
+            {user?.type === "student" && (
+              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-[5px] text-[11px] font-semibold text-emerald-600 ring-1 ring-emerald-500/20">
+                <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                {matchScore}% Match
+              </span>
+            )}
           </div>
         </div>
 
@@ -72,7 +81,7 @@ export function ThesisCard({ thesis }: { thesis: Thesis }) {
             )}
             <span className="truncate">{thesis.organization}</span>
             {thesis.postedBy === "admin" && (
-              <span className="shrink-0 text-[11px] text-muted-foreground/50">· by GraduatesCorner</span>
+              <span className="shrink-0 text-[11px] text-muted-foreground/50">· by Graduates Corner</span>
             )}
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

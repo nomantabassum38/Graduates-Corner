@@ -29,7 +29,7 @@ import type { Thesis, TraineeProgram, BlogPost } from "@/lib/data/types"
 
 const pages = [
   { name: "Home", href: "/", icon: Home },
-  { name: "Master's Theses", href: "/master-thesis", icon: BookOpen },
+  { name: "Master's Thesis", href: "/master-thesis", icon: BookOpen },
   { name: "PhD Positions", href: "/phd-positions", icon: GraduationCap },
   { name: "Trainee Programs", href: "/trainee-programs", icon: Briefcase },
   { name: "Blog", href: "/blog", icon: Newspaper },
@@ -246,7 +246,7 @@ export function GlobalSearchCommand() {
 
               {/* Theses */}
               {items.masterTheses.length > 0 && (
-                <CommandGroup heading="Recent Master Theses">
+                <CommandGroup heading="Recent Master's Thesis">
                   {items.masterTheses.map((thesis) => (
                     <CommandItem
                       key={thesis.id}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { AnalyticsCharts } from "@/components/admin/analytics-charts"
 import { createClient } from "@/lib/supabase/client"
 import {
   Users,
@@ -190,6 +191,11 @@ export default function AdminOverviewPage() {
             </CardContent>
           </Card>
         </Link>
+      </div>
+
+      {/* Analytics Charts */}
+      <div className="mb-6 sm:mb-8">
+        <AnalyticsCharts stats={stats} />
       </div>
 
       {/* Two-column breakdown */}

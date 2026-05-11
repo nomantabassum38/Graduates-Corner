@@ -14,7 +14,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPost; featured?
 
   if (featured) {
     return (
-      <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      <Card className="overflow-hidden hover-lift">
         <div className="grid md:grid-cols-2">
           <div className="relative aspect-video bg-secondary md:aspect-auto md:min-h-[280px]">
             {post.coverImage ? (
@@ -74,7 +74,7 @@ export function BlogCard({ post, featured = false }: { post: BlogPost; featured?
   }
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <Card className="flex flex-col overflow-hidden hover-lift">
       <div className="relative aspect-video bg-secondary">
         {post.coverImage ? (
           <Image

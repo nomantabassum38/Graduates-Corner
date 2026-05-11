@@ -27,6 +27,8 @@ import {
   Loader2,
   Heart,
   Send,
+  Users,
+  Settings,
 } from "lucide-react"
 
 const sidebarLinks = {
@@ -37,6 +39,7 @@ const sidebarLinks = {
         { href: "/dashboard/student", label: "Overview", mobileLabel: "Home", icon: LayoutDashboard, mobileHidden: false },
         { href: "/dashboard/student/wishlist", label: "Wishlist", mobileLabel: "Wishlist", icon: Heart, mobileHidden: false },
         { href: "/dashboard/student/applied", label: "Applied Posts", mobileLabel: "Applied", icon: Send, mobileHidden: false },
+        { href: "/dashboard/settings", label: "Settings", mobileLabel: "Settings", icon: Settings, mobileHidden: false },
       ]
     },
     {
@@ -53,6 +56,8 @@ const sidebarLinks = {
       title: "General",
       links: [
         { href: "/dashboard/university", label: "Overview", mobileLabel: "Home", icon: LayoutDashboard, mobileHidden: false },
+        { href: "/dashboard/university/applicants", label: "Applicants", mobileLabel: "Applicants", icon: Users, mobileHidden: false },
+        { href: "/dashboard/settings", label: "Settings", mobileLabel: "Settings", icon: Settings, mobileHidden: false },
       ]
     },
     {
@@ -83,6 +88,8 @@ const sidebarLinks = {
       title: "General",
       links: [
         { href: "/dashboard/company", label: "Overview", mobileLabel: "Home", icon: LayoutDashboard, mobileHidden: false },
+        { href: "/dashboard/company/applicants", label: "Applicants", mobileLabel: "Applicants", icon: Users, mobileHidden: false },
+        { href: "/dashboard/settings", label: "Settings", mobileLabel: "Settings", icon: Settings, mobileHidden: false },
       ]
     },
     {
@@ -150,7 +157,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Show loading while initializing session
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#F8FAFC]">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
         <p className="text-sm font-medium text-muted-foreground">Loading your dashboard...</p>
       </div>

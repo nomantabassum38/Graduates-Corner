@@ -9,6 +9,7 @@ import { ThesisCard } from "@/components/shared/thesis-card"
 import { ProgramCard } from "@/components/shared/program-card"
 import { BlogCard } from "@/components/shared/blog-card"
 import { TestimonialCard } from "@/components/shared/testimonial-card"
+import { ThesisCardSkeleton } from "@/components/shared/skeleton-cards"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/lib/auth-context"
@@ -26,6 +27,7 @@ import {
   Loader2,
   X,
 } from "lucide-react"
+import { TrustedMarquee } from "@/components/shared/trusted-marquee"
 
 const stats = [
   { label: "Thesis Position", value: "850+", icon: FileText },
@@ -232,11 +234,12 @@ function HomePageContent() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-accent/20 via-transparent to-transparent" />
         <div className="relative mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
-            <Badge className="mb-6 bg-primary-foreground/15 text-primary-foreground hover:bg-primary-foreground/20">
-              Trusted by 120+ Universities & Companies
+            <Badge className="mb-6 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-md border border-primary-foreground/20 px-4 py-1.5 shadow-sm transition-all hover:scale-105">
+              The #1 Platform for Graduates
             </Badge>
-            <h1 className="mb-6 text-balance text-4xl font-bold tracking-tight lg:text-5xl xl:text-6xl">
-              Find Your Perfect Academic Opportunity
+            <h1 className="mb-6 text-balance text-4xl font-extrabold tracking-tight lg:text-5xl xl:text-7xl leading-tight">
+              Find Your Perfect <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary-foreground animate-gradient bg-[length:200%_auto]">Academic Opportunity</span>
             </h1>
             <h2 className="mb-8 text-pretty text-lg leading-relaxed text-primary-foreground/80 lg:text-xl font-normal">
               Discover master thesis, PhD positions, and graduate trainee programs from top
@@ -245,8 +248,8 @@ function HomePageContent() {
 
             {/* Functional Search Bar */}
             <div className="relative mx-auto max-w-xl" ref={searchRef}>
-              <div className="flex items-center gap-2 rounded-lg bg-primary-foreground/10 p-2 backdrop-blur-sm">
-                <div className="flex flex-1 items-center gap-2 rounded-md bg-card px-4 py-2.5">
+              <div className="flex items-center gap-2 rounded-2xl glass-panel p-2 border border-primary-foreground/20">
+                <div className="flex flex-1 items-center gap-2 rounded-xl bg-card px-4 py-3 shadow-inner">
                   <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
                   <input
                     type="text"
@@ -346,6 +349,9 @@ function HomePageContent() {
         </div>
       </section>
 
+      {/* Trusted Marquee */}
+      <TrustedMarquee />
+
       {/* Stats Section */}
       <section className="border-b border-border bg-card px-4 py-12">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 lg:grid-cols-4 lg:gap-8">
@@ -360,9 +366,13 @@ function HomePageContent() {
       </section>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="h-10 w-10 animate-spin text-primary" />
-          <p className="mt-4 text-muted-foreground">Loading opportunities...</p>
+        <div className="mx-auto max-w-7xl px-4 py-16">
+          <div className="mb-10"><div className="h-8 w-48 animate-pulse rounded bg-muted" /></div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[...Array(3)].map((_, i) => (
+              <ThesisCardSkeleton key={i} />
+            ))}
+          </div>
         </div>
       ) : (
         <>

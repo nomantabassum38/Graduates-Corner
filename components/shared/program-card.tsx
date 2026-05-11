@@ -22,8 +22,11 @@ export function ProgramCard({ program }: { program: TraineeProgram }) {
   const visibleFields = showAllFields ? fields : fields.slice(0, MAX_VISIBLE_FIELDS)
   const hiddenFieldCount = fields.length - MAX_VISIBLE_FIELDS
 
+  // Generate a deterministic Match Score for demo
+  const matchScore = 75 + (program.id.charCodeAt(0) % 24)
+
   return (
-    <Card className="group relative flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <Card className="group relative flex flex-col hover-lift">
       {user?.type === "student" && (
         <button
           onClick={(e) => {
@@ -42,6 +45,12 @@ export function ProgramCard({ program }: { program: TraineeProgram }) {
           <Badge className="bg-accent text-accent-foreground hover:bg-accent/90">
             Trainee Program
           </Badge>
+          {user?.type === "student" && (
+            <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-[5px] text-[11px] font-semibold text-emerald-600 ring-1 ring-emerald-500/20">
+              <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              {matchScore}% Match
+            </span>
+          )}
         </div>
         <Link href={`/trainee-programs/${program.id}`}>
           <h3 className="text-balance text-lg font-semibold leading-tight text-foreground transition-colors hover:text-primary">
@@ -58,7 +67,7 @@ export function ProgramCard({ program }: { program: TraineeProgram }) {
             <Building2 className="h-4 w-4 shrink-0 text-primary" />
             <span className="truncate">{program.company}</span>
             {program.postedBy === "admin" && (
-              <span className="shrink-0 text-[11px] text-muted-foreground/50">· by GraduatesCorner</span>
+              <span className="shrink-0 text-[11px] text-muted-foreground/50">· by Graduates Corner</span>
             )}
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

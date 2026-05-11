@@ -34,6 +34,7 @@ export interface Thesis {
   createdAt: string
   creatorName?: string
   creatorType?: string
+  tags?: string[]
 }
 
 export interface TraineeProgram {
@@ -51,6 +52,7 @@ export interface TraineeProgram {
   externalUrl: string
   status: ApprovalStatus
   createdAt: string
+  tags?: string[]
 }
 
 export interface BlogPost {
@@ -67,6 +69,7 @@ export interface BlogPost {
   status: ApprovalStatus
   postedByUserId?: string
   authorAvatar?: string
+  tags?: string[]
 }
 
 export interface Testimonial {

@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { PublicLayout } from "@/components/layout/public-layout"
 import { ThesisCard } from "@/components/shared/thesis-card"
+import { ShareButtons } from "@/components/shared/share-buttons"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -202,7 +203,10 @@ export default function ThesisDetailPage({ params }: { params: Promise<{ id: str
             <div className="flex-1">
               <Card>
                 <CardContent className="p-6 lg:p-8">
-                  <h2 className="mb-4 text-xl font-semibold text-foreground">Description</h2>
+                  <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-6">
+                    <h2 className="text-xl font-semibold text-foreground">Description</h2>
+                    <ShareButtons title={thesis.title} url={`/theses/${thesis.id}`} />
+                  </div>
                   <div className="prose prose-sm max-w-none text-muted-foreground">
                     {thesis.description.split("\n").map((paragraph, i) => (
                       <p key={i} className="mb-4 leading-relaxed">

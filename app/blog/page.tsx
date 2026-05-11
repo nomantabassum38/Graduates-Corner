@@ -3,9 +3,11 @@
 import { useState, useMemo, useEffect } from "react"
 import { PublicLayout } from "@/components/layout/public-layout"
 import { BlogCard } from "@/components/shared/blog-card"
+import { BlogCardSkeleton } from "@/components/shared/skeleton-cards"
+import { Pagination } from "@/components/shared/pagination"
 import { useAuth } from "@/lib/auth-context"
 import type { BlogPost } from "@/lib/data/types"
-import { Search, X, Loader2 } from "lucide-react"
+import { Search, X } from "lucide-react"
 
 export default function BlogPage() {
   const { supabase } = useAuth()
@@ -13,6 +15,8 @@ export default function BlogPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [activeCategory, setActiveCategory] = useState("All")
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 9
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -55,7 +59,7 @@ export default function BlogPage() {
     return ["All", ...Array.from(new Set(posts.map((p) => p.category)))]
   }, [posts])
 
-  const filtered = useMemo(() => {
+  const filteredPosts = useMemo(() => {
     return posts
       .filter((p) => {
         if (search) {
@@ -72,8 +76,15 @@ export default function BlogPage() {
       .filter((p) => (activeCategory === "All" ? true : p.category === activeCategory))
   }, [posts, search, activeCategory])
 
-  const featuredPost = filtered[0]
-  const restPosts = filtered.slice(1)
+  // Reset page when search or category changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, activeCategory])
+
+  const paginatedPosts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    return filteredPosts.slice(startIndex, startIndex + itemsPerPage)
+  }, [filteredPosts, currentPage])
 
   return (
     <PublicLayout>
@@ -121,33 +132,26 @@ export default function BlogPage() {
           </div>
 
           {loading ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="flex flex-col gap-4 overflow-hidden rounded-xl border border-border bg-card p-4">
-                   <div className="aspect-video w-full animate-pulse rounded-lg bg-muted" />
-                   <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
-                   <div className="h-4 w-full animate-pulse rounded bg-muted" />
-                   <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
-                </div>
+                <BlogCardSkeleton key={i} />
               ))}
             </div>
-          ) : filtered.length > 0 ? (
+          ) : filteredPosts.length > 0 ? (
             <>
-              {/* Featured Post */}
-              {featuredPost && (
-                <div className="mb-10">
-                  <BlogCard post={featuredPost} featured />
-                </div>
-              )}
-
-              {/* Rest of posts */}
-              {restPosts.length > 0 && (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {restPosts.map((post) => (
-                    <BlogCard key={post.id} post={post} />
-                  ))}
-                </div>
-              )}
+              <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {paginatedPosts.map((post) => (
+                  <BlogCard key={post.id} post={post} />
+                ))}
+              </div>
+              <div className="mt-12">
+                <Pagination 
+                  totalItems={filteredPosts.length} 
+                  itemsPerPage={itemsPerPage} 
+                  currentPage={currentPage} 
+                  onPageChange={setCurrentPage} 
+                />
+              </div>
             </>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-16 text-center">

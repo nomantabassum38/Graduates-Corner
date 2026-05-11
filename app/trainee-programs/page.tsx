@@ -3,6 +3,8 @@
 import { useState, useMemo, useEffect } from "react"
 import { PublicLayout } from "@/components/layout/public-layout"
 import { ProgramCard } from "@/components/shared/program-card"
+import { ProgramCardSkeleton } from "@/components/shared/skeleton-cards"
+import { Pagination } from "@/components/shared/pagination"
 import { FilterPanel, type FilterSection } from "@/components/shared/filter-panel"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -10,6 +12,7 @@ import { useAuth } from "@/lib/auth-context"
 import type { TraineeProgram } from "@/lib/data/types"
 import { locations } from "@/lib/data/locations"
 import { Search, SlidersHorizontal, X, Loader2 } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 
 /* Duration options */
@@ -29,12 +32,16 @@ export default function TraineeProgramsPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [showFilters, setShowFilters] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
   const [filters, setFilters] = useState<Record<string, string[]>>({
     field: [],
     location: [],
     compensation: [],
     duration: [],
+    deadline: [],
   })
+  const [sortBy, setSortBy] = useState("newest")
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -73,6 +80,7 @@ export default function TraineeProgramsPage() {
 
   /* Toggle a filter value */
   const handleToggle = (sectionId: string, value: string) => {
+    setCurrentPage(1)
     setFilters((prev) => ({
       ...prev,
       [sectionId]: prev[sectionId].includes(value)
@@ -82,7 +90,7 @@ export default function TraineeProgramsPage() {
   }
 
   const handleClearAll = () => {
-    setFilters({ field: [], location: [], compensation: [], duration: [] })
+    setFilters({ field: [], location: [], compensation: [], duration: [], deadline: [] })
   }
 
   const activeFilterCount = Object.values(filters).reduce(
@@ -197,12 +205,22 @@ export default function TraineeProgramsPage() {
           count: durCounts[d.value] || 0,
         })),
       },
+      {
+        id: "deadline",
+        label: "Deadline",
+        type: "checkbox" as const,
+        options: [
+          { value: "this_week", label: "This Week" },
+          { value: "this_month", label: "This Month" },
+          { value: "next_month", label: "Next Month" },
+        ],
+      },
     ]
   }, [programs])
 
   /* Filtered results */
   const filtered = useMemo(() => {
-    return programs
+    let result = programs
       .filter((p) => {
         if (search) {
           const q = search.toLowerCase()
@@ -240,7 +258,43 @@ export default function TraineeProgramsPage() {
         const months = p.duration.replace(/[^0-9]/g, "")
         return filters.duration.includes(months)
       })
-  }, [programs, search, filters])
+      .filter((p) => {
+        if (!filters.deadline || filters.deadline.length === 0) return true
+        const deadlineDate = new Date(p.deadline)
+        const today = new Date()
+        const nextWeek = new Date()
+        nextWeek.setDate(today.getDate() + 7)
+        const nextMonth = new Date()
+        nextMonth.setMonth(today.getMonth() + 1)
+        const nextTwoMonths = new Date()
+        nextTwoMonths.setMonth(today.getMonth() + 2)
+
+        return filters.deadline.some((d) => {
+          if (d === "this_week") return deadlineDate <= nextWeek && deadlineDate >= today
+          if (d === "this_month") return deadlineDate <= nextMonth && deadlineDate >= today
+          if (d === "next_month") return deadlineDate <= nextTwoMonths && deadlineDate >= nextMonth
+          return true
+        })
+      })
+
+    if (sortBy === "newest") {
+      result = result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    } else if (sortBy === "deadline") {
+      result = result.sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
+    }
+
+    return result
+  }, [programs, search, filters, sortBy])
+
+  // Reset page when search changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search])
+
+  const paginatedPrograms = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    return filtered.slice(startIndex, startIndex + itemsPerPage)
+  }, [filtered, currentPage])
 
   return (
     <PublicLayout>
@@ -316,6 +370,18 @@ export default function TraineeProgramsPage() {
                 )}
               </div>
             )}
+            
+            <div className="flex items-center gap-4 w-full sm:w-auto mt-4 sm:mt-0">
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                  <SelectItem value="deadline">Deadline: Soonest</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="flex flex-col gap-8 lg:flex-row">
@@ -338,16 +404,27 @@ export default function TraineeProgramsPage() {
             {/* Results */}
             <div className="flex-1">
               {loading ? (
-                <div className="flex flex-col items-center justify-center py-20">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  <p className="mt-4 text-muted-foreground">Loading trainee programs...</p>
-                </div>
-              ) : filtered.length > 0 ? (
-                <div className="grid gap-6 md:grid-cols-2">
-                  {filtered.map((program) => (
-                    <ProgramCard key={program.id} program={program} />
+                <div className="grid gap-4">
+                  {[...Array(4)].map((_, i) => (
+                    <ProgramCardSkeleton key={i} />
                   ))}
                 </div>
+              ) : filtered.length > 0 ? (
+                <>
+                  <div className="grid gap-4">
+                    {paginatedPrograms.map((program) => (
+                      <ProgramCard key={program.id} program={program} />
+                    ))}
+                  </div>
+                  <div className="mt-8">
+                    <Pagination 
+                      totalItems={filtered.length} 
+                      itemsPerPage={itemsPerPage} 
+                      currentPage={currentPage} 
+                      onPageChange={setCurrentPage} 
+                    />
+                  </div>
+                </>
               ) : (
                 <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-20 text-center">
                   <Search className="mb-4 h-12 w-12 text-muted-foreground/40" />

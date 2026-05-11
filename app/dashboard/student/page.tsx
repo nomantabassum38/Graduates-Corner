@@ -143,6 +143,39 @@ export default function StudentDashboard() {
                 </span>
               </div>
             </div>
+
+            {/* Profile Completeness UI */}
+            <div className="mt-4 flex w-full flex-col gap-2 rounded-xl bg-secondary/50 p-4 sm:mt-0 sm:w-64">
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-semibold text-foreground">Profile Completeness</span>
+                <span className="font-bold text-primary">
+                  {Math.round(
+                    (user?.name ? 25 : 0) +
+                    (user?.email ? 25 : 0) +
+                    (user?.avatar ? 25 : 0) +
+                    (user?.bio ? 25 : 0)
+                  )}%
+                </span>
+              </div>
+              <div className="h-2.5 w-full overflow-hidden rounded-full bg-border">
+                <div 
+                  className="h-full rounded-full bg-gradient-to-r from-accent to-primary transition-all duration-1000 ease-out"
+                  style={{
+                    width: `${Math.round(
+                      (user?.name ? 25 : 0) +
+                      (user?.email ? 25 : 0) +
+                      (user?.avatar ? 25 : 0) +
+                      (user?.bio ? 25 : 0)
+                    )}%`
+                  }}
+                />
+              </div>
+              {(!user?.bio || !user?.avatar) && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Complete your profile to get better opportunity matches.
+                </p>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>

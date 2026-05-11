@@ -3,15 +3,17 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { AuthProvider } from '@/lib/auth-context'
 import { WishlistProvider } from '@/lib/wishlist-context'
+import { NotificationProvider } from '@/lib/notification-context'
 import { LogoutLoader } from '@/components/logout-loader'
 import { Toaster } from 'sonner'
+import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'GraduatesCorner - Find Your Academic Opportunity',
+  title: 'Graduates Corner - Find Your Academic Opportunity',
   description: 'Discover master theses, PhD positions, and graduate trainee programs from top universities and companies across Sweden and all over the world.',
 
   icons: {
@@ -29,10 +31,10 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: 'GraduatesCorner',
+    title: 'Graduates Corner',
     description: 'Find master theses, PhD positions, and graduate programs across Sweden and the world.',
     url: 'https://graduatescorner.com', 
-    siteName: 'GraduatesCorner',
+    siteName: 'Graduates Corner',
     locale: 'en_US',
     images: [
       {
@@ -46,7 +48,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    title: 'GraduatesCorner',
+    title: 'Graduates Corner',
     description: 'Find academic and career opportunities across Sweden and the world.',
     images: ['https://graduatescorner.com/og-image.png?v=3'],
   },
@@ -57,16 +59,25 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="font-sans antialiased bg-[#F8FAFC]" suppressHydrationWarning>
-        <AuthProvider>
-          <WishlistProvider>
-            {children}
-            <LogoutLoader />
-            <Toaster position="bottom-left" richColors />
-          </WishlistProvider>
-        </AuthProvider>
-        <Analytics />
+    <html lang="en" suppressHydrationWarning>
+      <body className="font-sans antialiased bg-background text-foreground" suppressHydrationWarning>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <WishlistProvider>
+              <NotificationProvider>
+                {children}
+                <LogoutLoader />
+                <Toaster position="bottom-left" richColors />
+              </NotificationProvider>
+            </WishlistProvider>
+          </AuthProvider>
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   )

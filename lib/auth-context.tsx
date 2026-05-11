@@ -231,10 +231,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .from("admin_users")
       .select("*")
       .eq("username", username)
-      .eq("password", password)
       .single()
 
     if (error || !data) return false
+
+    const bcrypt = await import("bcryptjs")
+    const isMatch = await bcrypt.compare(password, data.password)
+
+    if (!isMatch) return false
 
     localStorage.setItem("gc_admin_session", "true")
     document.cookie =

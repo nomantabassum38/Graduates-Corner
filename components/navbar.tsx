@@ -7,6 +7,8 @@ import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { GlobalSearchCommand } from "@/components/global-search-command"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { NotificationBell } from "@/components/shared/notification-bell"
 import {
   GraduationCap,
   Menu,
@@ -24,7 +26,7 @@ import {
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/phd-positions", label: "PhD Positions" },
-  { href: "/master-thesis", label: "Master's Theses" },
+  { href: "/master-thesis", label: "Master's Thesis" },
   { href: "/trainee-programs", label: "Trainee Programs" },
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
@@ -33,7 +35,7 @@ const navItems = [
 const mobileNavItems = [
   { href: "/", label: "Home", icon: Home },
   { href: "/phd-positions", label: "PhD Positions", icon: GraduationCap },
-  { href: "/master-thesis", label: "Master's Theses", icon: BookOpen },
+  { href: "/master-thesis", label: "Master's Thesis", icon: BookOpen },
   { href: "/trainee-programs", label: "Trainee Programs", icon: Briefcase },
   { href: "/blog", label: "Blog", icon: Newspaper },
   { href: "/about", label: "About", icon: Info },
@@ -64,9 +66,9 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-200 ${scrolled
-        ? "border-b border-slate-200/80 bg-[#FAFAFB] shadow-md"
-        : "border-b border-slate-200/40 bg-[#FAFAFB] shadow-[0_1px_3px_0_rgba(0,0,0,0.702)]"
+      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${scrolled
+        ? "glass-navbar shadow-md"
+        : "bg-background/40 backdrop-blur-sm border-b border-border/40"
         }`}
     >
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
@@ -82,9 +84,9 @@ export function Navbar() {
               <GraduationCap className={`text-primary-foreground transition-all duration-200 ${scrolled ? "h-4 w-4" : "h-4.5 w-4.5"
                 }`} />
             </div>
-            <span className={`font-semibold tracking-tight text-foreground transition-all duration-200 ${scrolled ? "text-[15px]" : "text-[17px]"
+            <span className={`font-extrabold tracking-tight transition-all duration-300 ${scrolled ? "text-[16px] text-gradient" : "text-[18px] text-gradient"
               }`}>
-              GraduatesCorner
+              Graduates Corner
             </span>
           </Link>
 
@@ -111,6 +113,8 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             {/* Search */}
             <GlobalSearchCommand />
+            <ThemeToggle />
+            {user && <NotificationBell />}
 
             {/* Auth — Desktop */}
             <div className="hidden items-center gap-1.5 lg:flex">

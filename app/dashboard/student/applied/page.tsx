@@ -26,8 +26,7 @@ export default function StudentAppliedPage() {
       const { data, error } = await supabase
         .from('applications')
         .select(`
-          thesis_id,
-          program_id,
+          *,
           theses (*),
           trainee_programs (*)
         `)
@@ -55,6 +54,7 @@ export default function StudentAppliedPage() {
             externalUrl: item.theses.external_url,
             status: item.theses.status,
             createdAt: item.theses.created_at,
+            applicationStatus: item.status,
           }))
         
         const programs = data
@@ -74,6 +74,7 @@ export default function StudentAppliedPage() {
             externalUrl: item.trainee_programs.external_url,
             status: item.trainee_programs.status,
             createdAt: item.trainee_programs.created_at,
+            applicationStatus: item.status,
           }))
 
         setAppliedTheses(theses)
@@ -107,11 +108,27 @@ export default function StudentAppliedPage() {
         </div>
       ) : totalApplied > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {appliedTheses.map((thesis) => (
-            <ThesisCard key={thesis.id} thesis={thesis} />
+          {appliedTheses.map((thesis: any) => (
+            <div key={thesis.id} className="relative group">
+              <Badge 
+                className="absolute -top-2 -right-2 z-10 capitalize shadow-sm border-2 border-background" 
+                variant={thesis.applicationStatus === 'accepted' ? 'default' : thesis.applicationStatus === 'rejected' ? 'destructive' : 'secondary'}
+              >
+                {thesis.applicationStatus || 'pending'}
+              </Badge>
+              <ThesisCard thesis={thesis} />
+            </div>
           ))}
-          {appliedPrograms.map((program) => (
-            <ProgramCard key={program.id} program={program} />
+          {appliedPrograms.map((program: any) => (
+            <div key={program.id} className="relative group">
+              <Badge 
+                className="absolute -top-2 -right-2 z-10 capitalize shadow-sm border-2 border-background" 
+                variant={program.applicationStatus === 'accepted' ? 'default' : program.applicationStatus === 'rejected' ? 'destructive' : 'secondary'}
+              >
+                {program.applicationStatus || 'pending'}
+              </Badge>
+              <ProgramCard program={program} />
+            </div>
           ))}
         </div>
       ) : (

@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { PublicLayout } from "@/components/layout/public-layout"
 import { BlogCard } from "@/components/shared/blog-card"
+import { ShareButtons } from "@/components/shared/share-buttons"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
@@ -222,6 +223,9 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                 >
                   {post.category}
                 </Badge>
+              </div>
+              <div className="flex w-full mt-4 sm:mt-0 sm:w-auto sm:ml-auto">
+                <ShareButtons title={post.title} url={`/blog/${post.slug}`} />
               </div>
             </div>
           </header>
